@@ -1,0 +1,19 @@
+{
+  "name": "tinderpol-game",
+  "version": "1.0.0",
+  "description": "Tinder or Interpol Quiz Game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["game", "quiz", "tinder", "interpol"],
+  "author": "Me",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
