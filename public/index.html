@@ -691,7 +691,7 @@
     ];
 
     // Variables du jeu
-    const QUESTIONS_PER_GAME = 20; // Nombre de questions par partie
+    const QUESTIONS_PER_GAME = 20;
     let currentIndex = 0;
     let correctCount = 0;
     let errorCount = 0;
@@ -745,6 +745,7 @@
         card.classList.add('error-animation');
       }
 
+      currentIndex++;
       updateScore();
       disableButtons();
 
@@ -756,7 +757,7 @@
 
     // Afficher la description
     function showDescription(isCorrect) {
-      const person = shuffledImages[currentIndex];
+      const person = shuffledImages[currentIndex - 1];
       
       document.getElementById('descImage').src = person.url;
       document.getElementById('descName').textContent = person.name;
@@ -780,7 +781,6 @@
     // Passer à la personne suivante
     function nextPerson() {
       descriptionModal.style.display = 'none';
-      currentIndex++;
       loadImage();
     }
 
@@ -788,7 +788,7 @@
     function updateScore() {
       correctSpan.textContent = correctCount;
       errorSpan.textContent = errorCount;
-      totalSpan.textContent = `${currentIndex}/${shuffledImages.length}`;
+      totalSpan.textContent = `${currentIndex}/${QUESTIONS_PER_GAME}`;
     }
 
     // Désactiver les boutons
@@ -807,9 +807,9 @@
 
     // Fin du jeu
     function endGame() {
-      const percentage = Math.round((correctCount / shuffledImages.length) * 100);
+      const percentage = Math.round((correctCount / QUESTIONS_PER_GAME) * 100);
       document.getElementById('finalScore').textContent = 
-        `Score: ${correctCount}/${shuffledImages.length} (${percentage}%)`;
+        `Score: ${correctCount}/${QUESTIONS_PER_GAME} (${percentage}%)`;
       
       let message = '';
       if (percentage === 100) {
