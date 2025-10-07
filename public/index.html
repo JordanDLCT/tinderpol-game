@@ -5,26 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinder or Interpol - Quiz</title>
   <style>
-    /* ====== Thème noir ====== */
+    /* ====== Variables ====== */
     :root {
       --spacing: 1rem;
+      --bg-primary: #1F1F1F;
+      --bg-secondary: #2C2C2C;
+      --text-primary: #e5e5e5;
+      --text-secondary: #a3a3a3;
+      --border-color: #444;
+      --gradient-pink: linear-gradient(90deg, #E93687, #F6844B);
+      --gradient-main: linear-gradient(90deg, #E93687, #2F76D0);
+      --color-blue: #2F76D0;
+      --color-success: #10a37f;
+      --color-error: #f87171;
+      --color-warning: #facc15;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      background-color: #1F1F1F;
-      color: #e5e5e5;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
     }
 
     /* ====== Header ====== */
     header {
-      background-color: #2C2C2C;
-      border-bottom: 0.5px solid #444;
-      padding: var(--spacing) 1rem;
+      background-color: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing) 1.5rem;
     }
 
     .header-content {
@@ -32,43 +47,22 @@
       align-items: center;
       justify-content: center;
       position: relative;
-    }
-
-    .site-title {
-      position: absolute;
-      left: 3em;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 2rem;
-      font-weight: bold;
-      background: linear-gradient(90deg, #E93687, #2F76D0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      color: transparent;
-      white-space: nowrap;
-      text-decoration: none;
-      transition: transform 0.2s ease, font-size 0.2s ease;
-    }
-
-    .site-title:hover {
-      transform: translateY(-50%) scale(1.1);
-      cursor: pointer;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     header h1 {
       margin: 0;
-      font-size: 2.7rem;
+      font-size: clamp(1.8rem, 5vw, 2.7rem);
       font-weight: bold;
       text-align: center;
-      display: inline-block;
     }
 
     header h1 .mot1 {
-      background: linear-gradient(90deg, #E93687, #F6844B);
+      background: var(--gradient-pink);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      color: transparent;
+      background-clip: text;
     }
 
     header h1 .mot2 {
@@ -76,7 +70,7 @@
     }
 
     header h1 .mot3 {
-      color: #2F76D0;
+      color: var(--color-blue);
     }
 
     header h1 .mot4 {
@@ -87,17 +81,26 @@
     .score-bar {
       display: flex;
       justify-content: center;
-      gap: 2rem;
-      padding: var(--spacing) 0;
-      background-color: #1e1e1e;
-      color: #e5e5e5;
+      align-items: center;
+      gap: clamp(1rem, 3vw, 2rem);
+      padding: 1rem;
+      background-color: #1a1a1a;
+      color: var(--text-primary);
       font-weight: bold;
-      flex-wrap: nowrap; /* empêche les éléments de passer à la ligne */
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--border-color);
     }
 
-    .score-item.correct { color: #10a37f; }
-    .score-item.error { color: #f87171; }
-    .score-item.total { color: #facc15; }
+    .score-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: clamp(0.9rem, 2vw, 1.1rem);
+    }
+
+    .score-item.correct { color: var(--color-success); }
+    .score-item.error { color: var(--color-error); }
+    .score-item.total { color: var(--color-warning); }
 
     /* ====== Contenu central ====== */
     main {
@@ -106,23 +109,27 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: var(--spacing);
-      gap: var(--spacing);
+      padding: 2rem 1rem;
+      gap: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    /* ====== Carte (image seule) ====== */
+    /* ====== Carte (image carrée 400x400) ====== */
     .card {
-      max-width: 400px;
-      width: 100%;
+      width: 400px;
+      height: 400px;
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
       position: relative;
+      background-color: var(--bg-secondary);
     }
 
     .card img {
       width: 100%;
-      height: 400px;
+      height: 100%;
       object-fit: cover;
       display: block;
       transition: transform 0.3s ease;
@@ -138,16 +145,16 @@
 
     @keyframes correctFlash {
       0%, 100% { transform: scale(1); filter: brightness(1); }
-      50% { transform: scale(1.05); filter: brightness(1.3) hue-rotate(90deg); }
+      50% { transform: scale(1.03); filter: brightness(1.2) saturate(1.3); }
     }
 
     @keyframes errorShake {
       0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-10px); }
-      75% { transform: translateX(10px); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
     }
 
-    /* ====== Boutons sous la carte ====== */
+    /* ====== Boutons ====== */
     .button-group {
       display: flex;
       gap: 1rem;
@@ -158,34 +165,41 @@
 
     .button-group button {
       flex: 1;
-      padding: 0.7rem;
+      padding: 1rem;
       border: none;
-      border-radius: 14px;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: bold;
-      transition: transform 0.2s ease, font-size 0.2s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .btn-primary {
-      background: linear-gradient(90deg, #E93687, #F6844B);
+      background: var(--gradient-pink);
       color: white;
     }
 
     .btn-secondary {
-      background-color: #2F76D0;
+      background-color: var(--color-blue);
       color: white;
     }
 
-    .btn-primary:hover,
-    .btn-secondary:hover {
-      transform: scale(1.03);
+    .btn-primary:hover:not(:disabled),
+    .btn-secondary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn-primary:active:not(:disabled),
+    .btn-secondary:active:not(:disabled) {
+      transform: translateY(0);
     }
 
     .btn-primary:disabled,
     .btn-secondary:disabled,
     .btn-center:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
     }
@@ -193,26 +207,33 @@
     .button-center {
       display: flex;
       justify-content: center;
-      margin-top: 0.05rem;
+      width: 100%;
+      max-width: 400px;
     }
 
     .btn-center {
-      background-color: black;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 0.7rem 2rem;
+      padding: 1rem 2.5rem;
       border: none;
-      border-radius: 14px;
-      font-size: 1.3rem;
+      border-radius: 12px;
+      font-size: 1.2rem;
       font-weight: bold;
       cursor: pointer;
-      transition: transform 0.2s ease, font-size 0.2s ease;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .btn-center:hover:not(:disabled) {
-      transform: scale(1.03);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
 
-    /* ====== Modal de description ====== */
+    .btn-center:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    /* ====== Modal ====== */
     .modal {
       display: none;
       position: fixed;
@@ -220,147 +241,169 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.85);
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      padding: 1rem;
+      overflow-y: auto;
     }
 
     .modal-content {
-      background-color: #2C2C2C;
+      background-color: var(--bg-secondary);
       padding: 2rem;
       border-radius: 18px;
       text-align: center;
       max-width: 500px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      max-height: 80vh;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      max-height: 90vh;
       overflow-y: auto;
+      margin: auto;
     }
 
     .modal-content h2 {
       margin-top: 0;
       font-size: 2rem;
-      background: linear-gradient(90deg, #E93687, #2F76D0);
+      background: var(--gradient-main);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .modal-content p {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       margin: 1rem 0;
+      line-height: 1.6;
     }
 
     .modal-content button {
-      background: linear-gradient(90deg, #E93687, #F6844B);
+      background: var(--gradient-pink);
       color: white;
-      padding: 0.7rem 2rem;
+      padding: 0.9rem 2rem;
       border: none;
-      border-radius: 14px;
-      font-size: 1.2rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
       font-weight: bold;
       cursor: pointer;
       margin-top: 1rem;
-      transition: transform 0.2s ease, font-size 0.2s ease;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+      transition: all 0.2s ease;
+      display: inline-block;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .modal-content button:hover {
-      transform: scale(1.03);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
     }
 
-    /* Description modal spécifique */
-    .description-modal .modal-content {
-      text-align: left;
-    }
-
+    /* Description modal */
     .description-header {
       display: flex;
-      align-items: center;
-      gap: 1rem;
+      justify-content: center;
       margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid #444;
     }
 
     .description-image {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      border-radius: 12px;
       object-fit: cover;
-    }
-
-    .description-title h3 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #e5e5e5;
+      border: 3px solid transparent;
+      background: var(--gradient-main);
+      padding: 3px;
     }
 
     .result-badge {
       display: inline-block;
-      padding: 0.3rem 0.8rem;
+      padding: 0.6rem 1.2rem;
       border-radius: 8px;
-      font-size: 0.9rem;
+      font-size: 1.1rem;
       font-weight: bold;
-      margin-top: 0.5rem;
+      margin: 1rem 0;
     }
 
     .result-badge.correct {
-      background-color: #10a37f;
+      background-color: var(--color-success);
       color: white;
     }
 
     .result-badge.incorrect {
-      background-color: #f87171;
+      background-color: var(--color-error);
       color: white;
     }
 
-    .description-info {
-      margin: 1rem 0;
+    .description-text {
+      text-align: left;
+      margin: 1.5rem 0;
+      line-height: 1.7;
     }
 
-    .info-item {
-      margin: 0.8rem 0;
-      padding: 0.5rem;
-      background-color: #1e1e1e;
-      border-radius: 8px;
-    }
-
-    .info-label {
+    .category-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.95rem;
       font-weight: bold;
-      color: #facc15;
-      display: block;
-      margin-bottom: 0.3rem;
+      margin-top: 1rem;
     }
 
-    .info-value {
-      color: #e5e5e5;
+    .category-tinder {
+      background: var(--gradient-pink);
+      color: white;
+    }
+
+    .category-interpol {
+      background-color: var(--color-blue);
+      color: white;
+    }
+
+    .category-both {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .interpol-link {
+      margin-top: 1.5rem;
+    }
+
+    .interpol-link button {
+      background-color: var(--color-blue);
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    .interpol-link button:hover {
+      background-color: #1e5aa8;
     }
 
     /* ====== Footer ====== */
     footer {
-      background-color: #2C2C2C;
+      background-color: var(--bg-secondary);
       text-align: center;
-      padding: var(--spacing);
-      border-top: 0.5px solid #444;
-    }
-
-    footer p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: #a3a3a3;
+      padding: 1.5rem 1rem;
+      border-top: 1px solid var(--border-color);
     }
 
     .footer-content {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.6rem;
+      gap: 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .footer-content p {
       margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .social-container {
+      display: flex;
+      gap: 1rem;
     }
 
     .social-container a {
@@ -369,50 +412,97 @@
       justify-content: center;
       background-color: white;
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 35px;
+      height: 35px;
+      transition: transform 0.2s ease;
     }
 
     .social-container a svg {
-      height: 16px;
-      width: 16px;
-      fill: red;
+      height: 18px;
+      width: 18px;
+      fill: #E1306C;
     }
 
     .social-container a:hover {
-      transform: scale(1.1);
-      transition: 0.2s;
+      transform: scale(1.15);
     }
 
     /* ====== Responsive ====== */
-    @media (max-width: 600px) {
-      .header-content {
-        flex-direction: column;
-        align-items: center;
-        position: static;
+    @media (max-width: 500px) {
+      main {
+        padding: 1.5rem 1rem;
+        gap: 1.2rem;
       }
 
-      .site-title {
-        position: static;
-        transform: none;
-        margin-bottom: 0.5rem;
-        text-align: center;
+      .card {
+        width: 350px;
+        height: 350px;
       }
 
-      header h1 {
-        font-size: 2rem;
+      .button-group,
+      .button-center {
+        max-width: 350px;
+      }
+
+      .button-group {
+        gap: 0.8rem;
+      }
+
+      .button-group button,
+      .btn-center {
+        font-size: 1.1rem;
+        padding: 0.9rem;
+      }
+
+      .modal-content {
+        padding: 1.5rem;
+      }
+
+      .description-image {
+        width: 120px;
+        height: 120px;
       }
     }
 
     @media (max-width: 400px) {
-      .button-group {
-        flex-direction: column;
+      .score-bar {
+        gap: 0.5rem;
+        font-size: 0.85rem;
       }
 
-      .score-bar {
-        
-        gap: 0.5rem;
+      .card {
+        width: 300px;
+        height: 300px;
       }
+
+      .button-group,
+      .button-center {
+        max-width: 300px;
+      }
+
+      .description-image {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    /* ====== Scrollbar personnalisée ====== */
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+      background: #1a1a1a;
+      border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background: var(--color-blue);
+      border-radius: 10px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover {
+      background: #1e5aa8;
     }
   </style>
 </head>
@@ -420,31 +510,40 @@
 
   <header>
     <div class="header-content">
-      
       <h1>
         <span class="mot1">Tinder</span>
-        <span class="mot2">or</span>
+        <span class="mot2"> or </span>
         <span class="mot3">Interpol</span>
         <span class="mot4">?</span>
       </h1>
     </div>
   </header>
 
-  <main>
-    <div class="score-bar">
-      <div class="score-item correct">✅ Correct: <span id="correct">0</span></div>
-      <div class="score-item error">❌ Error: <span id="error">0</span></div>
-      <div class="score-item total">📊 Total: <span id="total">0/20</span></div>
+  <div class="score-bar">
+    <div class="score-item correct">
+      <span>✅ Correct:</span>
+      <span id="correct">0</span>
     </div>
-    
+    <div class="score-item error">
+      <span>❌ Error:</span>
+      <span id="error">0</span>
+    </div>
+    <div class="score-item total">
+      <span>📊 Total:</span>
+      <span id="total">0/20</span>
+    </div>
+  </div>
+
+  <main>
     <div class="card" id="card">
       <img id="cardImage" src="" alt="Card image">
     </div>
 
     <div class="button-group">
-      <button class="btn-primary" id="btnTinder">Tinder</button>
-      <button class="btn-secondary" id="btnInterpol">Interpol</button>
+      <button class="btn-primary" id="btnTinder">💕 Tinder</button>
+      <button class="btn-secondary" id="btnInterpol">🚨 Interpol</button>
     </div>
+
     <div class="button-center">
       <button class="btn-center" id="btnBoth">⚡️ Both ⚡️</button>
     </div>
@@ -455,29 +554,19 @@
     <div class="modal-content">
       <div class="description-header">
         <img id="descImage" class="description-image" src="" alt="Photo">
-        <div class="description-title">
-          <h3 id="descName"></h3>
-          <span id="descResult" class="result-badge"></span>
-        </div>
       </div>
-      <div class="description-info">
-        <div class="info-item">
-          <span class="info-label">👤 Full Name</span>
-          <span class="info-value" id="descFullName"></span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">📍 Origin</span>
-          <span class="info-value" id="descOrigin"></span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">ℹ️ Description</span>
-          <span class="info-value" id="descDescription"></span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">🎯 Category</span>
-          <span class="info-value" id="descCategory"></span>
-        </div>
+
+      <div id="descResult" class="result-badge"></div>
+
+      <div class="description-text">
+        <p id="descDescription"></p>
+        <div id="descCategory" class="category-badge"></div>
       </div>
+
+      <div id="interpolLinkContainer" class="interpol-link" style="display: none;">
+        <button onclick="window.open(currentInterpolUrl, '_blank')">🔍 View Interpol Profile</button>
+      </div>
+
       <button onclick="nextPerson()">Next Person ➡️</button>
     </div>
   </div>
@@ -488,19 +577,19 @@
       <h2>🎉 Game Over!</h2>
       <p id="finalScore"></p>
       <p id="finalMessage"></p>
-      <button onclick="restartGame()">Play Again</button>
+      <button onclick="restartGame()">🔄 Play Again</button>
     </div>
   </div>
 
   <footer>
     <div class="footer-content">
       <p><strong>Disclaimer:</strong> This website is a deduction game for satirical and educational purposes.</p>
-      <br/><p>&copy; 2025 Me</p>
+      <p>&copy; 2025 Tinder or Interpol</p>
       <div class="social-container">
-        <a href="https://www.instagram.com/m3_maelan">
+        <a href="https://www.instagram.com/m3_maelan" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <title>Instagram</title>
-            <path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/>
+            <path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2037-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4217-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/>
           </svg>
         </a>
       </div>
@@ -508,188 +597,33 @@
   </footer>
 
   <script>
-    // Base de données des images avec descriptions
+    // Base de données des images (20 images exactement)
     const images = [
-      { 
-        url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Alex',
-        fullName: 'Alexandre Martin',
-        origin: 'Paris, France',
-        description: 'Travel and photography enthusiast. Loves hanging out with friends and discovering new restaurants.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop', 
+      // INTERPOL (7 images)
+      {
+        url: 'images/interpol/Capture d’écran 2025-10-07 à 19.10.50.png',
         answer: 'interpol',
-        name: 'Marcus',
-        fullName: 'Marcus Johnson',
-        origin: 'London, United Kingdom',
-        description: 'Wanted for bank fraud and identity theft. Considered dangerous.',
-        category: '🚨 Interpol'
+        description: 'Under section 148-Rioting,armed with deadly weapon 149-Every member of Unlawful assembly guilty of offence committed in prosecution of common object 323-Punishment for voluntarily causing hurt 307-Attempt to murder 506-Punishment for criminal intimidation 427-Mischief causing damage to the amount of fifty rupees of Indian Penal Code and Section 25-Punishment for certain offences of the Arms Act,1959.',
+        category: '🚨 Interpol',
+        interpolUrl: 'https://www.interpol.int/fr/Notre-action/Notices/Notices-rouges/Voir-les-notices-rouges#'
       },
-      { 
-        url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop', 
+      
+      // TINDER (10 images)
+      {
+        url: 'images/tinder/img5.jpg',
+        answer: 'tinder',
+        description: 'Medical student from Paris. Classical music enthusiast.',
+        category: '💕 Tinder'
+      },
+      
+      // BOTH (3 images)
+      {
+        url: 'images/both/img1.jpg',
         answer: 'both',
-        name: 'Thomas',
-        fullName: 'Thomas Dubois',
-        origin: 'Lyon, France',
-        description: 'Architect by day, wanted for fraud by night. Double life recently discovered.',
-        category: '⚡️ Both (Tinder & Interpol)'
+        description: 'Fashion influencer with a dark secret. Wanted for luxury goods counterfeiting.',
+        category: '⚡️ Both (Tinder & Interpol)',
+        interpolUrl: 'https://www.interpol.int/How-we-work/Notices/View-Red-Notices'
       },
-      { 
-        url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Lucas',
-        fullName: 'Lucas Bernard',
-        origin: 'Marseille, France',
-        description: 'Tech entrepreneur. Loves sports, electronic music and seaside drinks.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=400&h=400&fit=crop', 
-        answer: 'interpol',
-        name: 'Viktor',
-        fullName: 'Viktor Petrov',
-        origin: 'Moscow, Russia',
-        description: 'Wanted for international drug trafficking. Considered extremely dangerous.',
-        category: '🚨 Interpol'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Hugo',
-        fullName: 'Hugo Lefebvre',
-        origin: 'Bordeaux, France',
-        description: 'Passionate sommelier. Looking for someone to share wine tastings and hikes with.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop', 
-        answer: 'both',
-        name: 'Emma',
-        fullName: 'Emma Rodriguez',
-        origin: 'Barcelona, Spain',
-        description: 'Freelance designer with a criminal record for identity theft. Currently under surveillance.',
-        category: '⚡️ Both (Tinder & Interpol)'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Sophie',
-        fullName: 'Sophie Laurent',
-        origin: 'Nice, France',
-        description: 'Yoga teacher. Vegetarian, nature and animal lover.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?w=400&h=400&fit=crop', 
-        answer: 'interpol',
-        name: 'Carlos',
-        fullName: 'Carlos Mendez',
-        origin: 'Mexico City, Mexico',
-        description: 'Wanted for money laundering and criminal conspiracy. International arrest warrant issued.',
-        category: '🚨 Interpol'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1531891437562-4301cf35b7e4?w=400&h=400&fit=crop', 
-        answer: 'both',
-        name: 'Michael',
-        fullName: 'Michael Chen',
-        origin: 'Hong Kong, China',
-        description: 'Cryptocurrency investor. Involved in a tax fraud case while maintaining an active social profile.',
-        category: '⚡️ Both (Tinder & Interpol)'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1492288991661-058aa541ff43?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Antoine',
-        fullName: 'Antoine Moreau',
-        origin: 'Toulouse, France',
-        description: 'Aerospace engineer. Fan of hiking, cooking and live concerts.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1503235930437-8c6293ba41f5?w=400&h=400&fit=crop', 
-        answer: 'interpol',
-        name: 'Dimitri',
-        fullName: 'Dimitri Volkov',
-        origin: 'Kyiv, Ukraine',
-        description: 'Wanted for cybercrime and computer hacking. Expert in information technology.',
-        category: '🚨 Interpol'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1545167622-3a6ac756afa4?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Léa',
-        fullName: 'Léa Fontaine',
-        origin: 'Strasbourg, France',
-        description: 'Dedicated nurse. Loves cats, cinema and quiet evenings at home.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?w=400&h=400&fit=crop', 
-        answer: 'both',
-        name: 'Nina',
-        fullName: 'Nina Ivanova',
-        origin: 'Saint Petersburg, Russia',
-        description: 'International model involved in a smuggling network. Very active public profile.',
-        category: '⚡️ Both (Tinder & Interpol)'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&h=400&fit=crop', 
-        answer: 'interpol',
-        name: 'Rafael',
-        fullName: 'Rafael Silva',
-        origin: 'São Paulo, Brazil',
-        description: 'Wanted for arms trafficking and aggravated violence. Considered armed and dangerous.',
-        category: '🚨 Interpol'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1502823403499-6ccfcf4fb453?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Julien',
-        fullName: 'Julien Rousseau',
-        origin: 'Nantes, France',
-        description: 'Freelance web developer. Self-proclaimed geek, video game and Netflix series enthusiast.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1499996860823-5214fcc65f8f?w=400&h=400&fit=crop', 
-        answer: 'both',
-        name: 'David',
-        fullName: 'David Anderson',
-        origin: 'New York, USA',
-        description: 'Investment banker leading a double life. Wanted for insider trading and market manipulation.',
-        category: '⚡️ Both (Tinder & Interpol)'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1463453091185-61582044d556?w=400&h=400&fit=crop', 
-        answer: 'interpol',
-        name: 'Ahmed',
-        fullName: 'Ahmed Hassan',
-        origin: 'Cairo, Egypt',
-        description: 'Wanted for antiquities trafficking and counterfeiting. Specialist in stolen art objects.',
-        category: '🚨 Interpol'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?w=400&h=400&fit=crop', 
-        answer: 'tinder',
-        name: 'Clara',
-        fullName: 'Clara Petit',
-        origin: 'Lille, France',
-        description: 'Cultural journalist. Passionate about contemporary art, literature and good food.',
-        category: '💕 Tinder'
-      },
-      { 
-        url: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=400&h=400&fit=crop', 
-        answer: 'both',
-        name: 'Isabella',
-        fullName: 'Isabella Romano',
-        origin: 'Milan, Italy',
-        description: 'Fashion influencer with a troubled past. Involved in a luxury goods counterfeiting case.',
-        category: '⚡️ Both (Tinder & Interpol)'
-      }
     ];
 
     // Variables du jeu
@@ -698,6 +632,7 @@
     let correctCount = 0;
     let errorCount = 0;
     let shuffledImages = [];
+    let currentInterpolUrl = '';
 
     // Éléments DOM
     const cardImage = document.getElementById('cardImage');
@@ -710,13 +645,13 @@
     const totalSpan = document.getElementById('total');
     const endModal = document.getElementById('endModal');
     const descriptionModal = document.getElementById('descriptionModal');
+    const interpolLinkContainer = document.getElementById('interpolLinkContainer');
 
     // Initialisation du jeu
     function initGame() {
-      // Mélanger toutes les images et en sélectionner QUESTIONS_PER_GAME
-      const allShuffled = [...images].sort(() => Math.random() - 0.5);
-      shuffledImages = allShuffled.slice(0, QUESTIONS_PER_GAME);
-      
+      // Mélanger et prendre exactement 20 images
+      shuffledImages = [...images].sort(() => Math.random() - 0.5).slice(0, QUESTIONS_PER_GAME);
+
       currentIndex = 0;
       correctCount = 0;
       errorCount = 0;
@@ -731,6 +666,7 @@
         return;
       }
       cardImage.src = shuffledImages[currentIndex].url;
+      cardImage.alt = `Person ${currentIndex + 1}`;
       enableButtons();
     }
 
@@ -760,14 +696,22 @@
     // Afficher la description
     function showDescription(isCorrect) {
       const person = shuffledImages[currentIndex - 1];
-      
+
       document.getElementById('descImage').src = person.url;
-      document.getElementById('descName').textContent = person.name;
-      document.getElementById('descFullName').textContent = person.fullName;
-      document.getElementById('descOrigin').textContent = person.origin;
+      document.getElementById('descImage').alt = person.category;
       document.getElementById('descDescription').textContent = person.description;
-      document.getElementById('descCategory').textContent = person.category;
-      
+
+      const categoryBadge = document.getElementById('descCategory');
+      categoryBadge.textContent = person.category;
+
+      if (person.answer === 'tinder') {
+        categoryBadge.className = 'category-badge category-tinder';
+      } else if (person.answer === 'interpol') {
+        categoryBadge.className = 'category-badge category-interpol';
+      } else {
+        categoryBadge.className = 'category-badge category-both';
+      }
+
       const resultBadge = document.getElementById('descResult');
       if (isCorrect) {
         resultBadge.textContent = '✅ Correct!';
@@ -776,7 +720,14 @@
         resultBadge.textContent = '❌ Incorrect';
         resultBadge.className = 'result-badge incorrect';
       }
-      
+
+      if (person.answer === 'interpol' || person.answer === 'both') {
+        currentInterpolUrl = person.interpolUrl || 'https://www.interpol.int/How-we-work/Notices/View-Red-Notices';
+        interpolLinkContainer.style.display = 'block';
+      } else {
+        interpolLinkContainer.style.display = 'none';
+      }
+
       descriptionModal.style.display = 'flex';
     }
 
@@ -810,9 +761,9 @@
     // Fin du jeu
     function endGame() {
       const percentage = Math.round((correctCount / QUESTIONS_PER_GAME) * 100);
-      document.getElementById('finalScore').textContent = 
+      document.getElementById('finalScore').textContent =
         `Score: ${correctCount}/${QUESTIONS_PER_GAME} (${percentage}%)`;
-      
+
       let message = '';
       if (percentage === 100) {
         message = '🏆 Perfect! You are an expert!';
@@ -825,7 +776,7 @@
       } else {
         message = '💪 Try again, you will improve!';
       }
-      
+
       document.getElementById('finalMessage').textContent = message;
       endModal.style.display = 'flex';
     }
@@ -836,6 +787,16 @@
       initGame();
     }
 
+    // Fermer les modales en cliquant à l'extérieur
+    window.addEventListener('click', (e) => {
+      if (e.target === descriptionModal) {
+        nextPerson();
+      }
+      if (e.target === endModal) {
+        restartGame();
+      }
+    });
+
     // Event listeners
     btnTinder.addEventListener('click', () => checkAnswer('tinder'));
     btnInterpol.addEventListener('click', () => checkAnswer('interpol'));
@@ -844,6 +805,5 @@
     // Démarrer le jeu
     initGame();
   </script>
-
 </body>
 </html>
