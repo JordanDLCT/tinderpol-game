@@ -1,19 +1,15 @@
 const express = require('express');
 const path = require('path');
-
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-// Servir les fichiers statiques (CSS, images, etc.)
+// Sert les fichiers statiques depuis le dossier "public"
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Route principale - Envoie la page HTML
+// Route pour la racine (optionnel si index.html existe dans public/)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Démarrer le serveur
-app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  console.log(`📂 Serving files from: ${path.join(__dirname, 'public')}`);
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
 });
